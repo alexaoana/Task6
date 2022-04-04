@@ -9,6 +9,8 @@ namespace Task6
         private static IEnumerable<Pet> _pets = CreatePets();
         public static void Main(string[] args)
         {
+            var countPets = _owners.Aggregate(0, (a, b) => a + b.Pets.Count);
+            Console.WriteLine(countPets);
         }
 
         private static void Filtering()
@@ -26,6 +28,8 @@ namespace Task6
         {
             var ownersWithNameStartingWithP = _owners.Select(x => x.LastName.StartsWith("P"));
             var ownersPets = _owners.SelectMany(x => x.Pets);
+            foreach (var pet in ownersWithNameStartingWithP)
+                Console.WriteLine(pet);
         }
 
         private static void Joins()
@@ -109,6 +113,16 @@ namespace Task6
             var secondPet = _pets.ElementAt(1);
             var secondPetDefault = _pets.ElementAtOrDefault(2);
             var empty = _pets.DefaultIfEmpty();
+        }
+
+        private static void Method()
+        {
+            var variable = from pet in _pets
+                           join owner in _owners
+                           on pet.OwnerId equals owner.Id
+                           where owner.Living == OwnerLivingEnum.APARTMENT && pet.Type == AnimalTypeEnum.DOG
+                           select new { Name = pet.Name };
+            var verify = variable.All(x => x.Name.StartsWith("E"));
         }
 
         private static void AggregationMethods()
